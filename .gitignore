@@ -33,7 +33,7 @@
 # Roslyn
 *.dotops
 
-# Avaonlia specific
+# Avalonia specific
 *.user
 *.User
 
@@ -52,3 +52,38 @@ Thumbs.db
 
 # Dotnet temporary
 project.assets.json
+
+# Windows-specific build outputs
+/win-x64/
+/linux-x64/
+/osx-x64/
+/osx-arm64/
+
+# Release packages
+/SentoLauncher-win-x64.zip
+/SentoLauncher-*-linux-x64.AppImage
+/SentoLauncher-*-macos.dmg
+sentolauncher_*.deb
+SentoLauncher-osx-*.app/
+
+# Large payloads and binaries (generated files)
+/Payload*.zip
+**.AppImage
+*.tar.gz
+
+# Temp and debug files
+/diff.txt
+/files.txt
+/github_release.yml
+/log.txt
+/screenshot*.png
+/stytest.ps1
+
+# SetupApp large binaries
+/SetupApp/bin/
+/SetupApp/object/
+/SetupApp/Payload*.zip
+
+# User-specific files
+*.user
+*.Userossolution
