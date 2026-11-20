@@ -1,0 +1,76 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Light theme. Same keys as Colors.xaml, cyan accent kept. -->
+
+    <!-- Main Theme Colors -->
+    <Color x:Key="PrimaryBackgroundColor">#F5F7FA</Color>
+    <Color x:Key="SecondaryBackgroundColor">#ECEEF3</Color>
+    <Color x:Key="TertiaryBackgroundColor">#E2E5EC</Color>
+    <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
+    <Color x:Key="HoverBackgroundColor">#D8DEE8</Color>
+    <Color x:Key="PressedBackgroundColor">#C7D0DE</Color>
+    <Color x:Key="BorderColor">#D3D8E3</Color>
+    <Color x:Key="AccentColor">#00B8D4</Color>
+    <Color x:Key="AccentHoverColor">#00D5F5</Color>
+    <Color x:Key="AccentPressedColor">#0094AC</Color>
+    <Color x:Key="TextPrimaryColor">#14171D</Color>
+    <Color x:Key="TextSecondaryColor">#5A6272</Color>
+    <Color x:Key="TextMutedColor">#8A93A6</Color>
+    <Color x:Key="TextOnAccentColor">#FFFFFF</Color>
+    <Color x:Key="SuccessColor">#00C853</Color>
+    <Color x:Key="WarningColor">#FFB300</Color>
+    <Color x:Key="ErrorColor">#FF1744</Color>
+    <Color x:Key="InfoColor">#2979FF</Color>
+    <Color x:Key="OnlineIndicatorColor">#00C853</Color>
+    <Color x:Key="OfflineIndicatorColor">#00B8D4</Color>
+    <Color x:Key="OverlayBackgroundColor">#80FFFFFF</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{StaticResource PrimaryBackgroundColor}"/>
+    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{StaticResource SecondaryBackgroundColor}"/>
+    <SolidColorBrush x:Key="TertiaryBackgroundBrush" Color="{StaticResource TertiaryBackgroundColor}"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBackgroundColor}"/>
+    <SolidColorBrush x:Key="HoverBackgroundBrush" Color="{StaticResource HoverBackgroundColor}"/>
+    <SolidColorBrush x:Key="PressedBackgroundBrush" Color="{StaticResource PressedBackgroundColor}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="{StaticResource AccentHoverColor}"/>
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="{StaticResource AccentPressedColor}"/>
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="DimOverlayBrush" Color="#CCF5F7FA"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}"/>
+    <SolidColorBrush x:Key="TextOnAccentBrush" Color="{StaticResource TextOnAccentColor}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+    <SolidColorBrush x:Key="InfoBrush" Color="{StaticResource InfoColor}"/>
+    <SolidColorBrush x:Key="OnlineIndicatorBrush" Color="{StaticResource OnlineIndicatorColor}"/>
+    <SolidColorBrush x:Key="OfflineIndicatorBrush" Color="{StaticResource OfflineIndicatorColor}"/>
+    <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="{StaticResource OverlayBackgroundColor}"/>
+
+    <!-- Gradients -->
+    <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#00B8D4" Offset="0"/>
+        <GradientStop Color="#00E5FF" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Window background gradient -->
+    <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#F5F7FA" Offset="0"/>
+        <GradientStop Color="#E8F4F8" Offset="0.55"/>
+        <GradientStop Color="#EFF3F8" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="CardGradientBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFFFF" Offset="0"/>
+        <GradientStop Color="#EDF0F5" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="TitleBarGradientBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#F5F7FA" Offset="0"/>
+        <GradientStop Color="#ECEEF3" Offset="1"/>
+    </LinearGradientBrush>
+
+</ResourceDictionary>

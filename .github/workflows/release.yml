@@ -1,0 +1,426 @@
+name: Sento Launcher Cross-Platform Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v1.0.1)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Build Windows x64 EXE
+    runs-on: windows-latest
+    environment: windows-build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+
+      - name: Restore dependencies
+        run: dotnet restore SentoLauncher.csproj
+
+      - name: Build Windows x64 (single-file EXE)
+        run: dotnet publish SentoLauncher.csproj `
+          -c Release `
+          -r win-x64 `
+          --self-contained true `
+          -p:PublishSingleFile=true `
+          -p:PublishTrimmed=false `
+          -p:TrimMode=partial `
+          -o publish/win-x64 `
+          --no-restore
+
+      - name: Verify EXE
+        run: |
+        $exe = "publish/win-x64/SentoLauncher.exe"
+        if (Test-Path $exe) {
+          $size = (Get-Item $exe).Length / 1MB
+          Write-Host "Windows x64: $exe ($([math]::Round($size, 1)) MB)"
+        } else {
+          Write-Host "Windows EXE not found!" -ForegroundColor Red
+          exit 1
+        }
+
+      - name: Create Windows ZIP
+        run: |
+        Push-Location "publish/win-x64"
+        zip -r -9 ..\SentoLauncher-win-x64.zip *
+        Pop-Location
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentolauncher-win-x64
+          path: publish/win-x64/
+          retention-days: 90
+
+  build-macos:
+    name: Build macOS (Intel + Apple Silicon)
+    runs-on: macos-latest
+    environment: macos-build
+    strategy:
+      matrix:
+        rid: [osx-x64, osx-arm64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+
+      - name: Restore dependencies
+        run: dotnet restore SentoLauncher.csproj
+
+      - name: Build macOS ${{ matrix.rid }}
+        run: dotnet publish SentoLauncher.csproj `
+          -c Release `
+          -r ${{ matrix.rid }} `
+          --self-contained true `
+          -p:PublishSingleFile=true `
+          -p:PublishTrimmed=false `
+          -p:TrimMode=partial `
+          -o publish/${{ matrix.rid }} `
+          --no-restore
+
+      - name: Verify executable
+        run: |
+        exe="publish/${{ matrix.rid }}/SentoLauncher"
+        if [ -f "$exe" ]; then
+          size=$(du -h "$exe" | cut -f1)
+          echo "macOS ${{ matrix.rid }}: $exe ($size)"
+          chmod +x "$exe"
+        else
+          echo "macOS executable not found!" -ForegroundColor Red
+          exit 1
+        fi
+
+      - name: Create macOS .app bundle
+        run: |
+        APP_NAME="SentoLauncher"
+        RID="${{ matrix.rid }}"
+        VERSION="${{ github.ref_name }}"
+        PUBLISH_DIR="publish/${RID}"
+        APP_DIR="release/${APP_NAME}.app"
+
+        rm -rf "${APP_DIR}"
+
+        mkdir -p "${APP_DIR}/Contents/MacOS"
+        mkdir -p "${APP_DIR}/Contents/Resources"
+
+        cp "${PUBLISH_DIR}/SentoLauncher" "${APP_DIR}/Contents/MacOS/"
+        chmod +x "${APP_DIR}/Contents/MacOS/SentoLauncher"
+
+        cat > "${APP_DIR}/Contents/Info.plist" << PLISTEOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>${APP_NAME}</string>
+    <key>CFBundleDisplayName</key>
+    <string>Sento Launcher</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.sento.launcher</string>
+    <key>CFBundleVersion</key>
+    <string>${VERSION}</string>
+    <key>CFBundleShortVersionString</key>
+    <string>${VERSION}</string>
+    <key>CFBundleExecutable</key>
+    <string>SentoLauncher</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleSignature</key>
+    <string>SENT</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.15</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>CFBundleDocumentTypes</key>
+    <array/>
+</dict>
+</plist>
+PLISTEOF
+
+        echo "APPLSENT" > "${APP_DIR}/Contents/PkgInfo"
+
+        if [ -f "Assets/icon.icns" ]; then
+            cp "Assets/icon.icns" "${APP_DIR}/Contents/Resources/AppIcon.icns"
+        elif [ -f "Assets/icon.ico" ]; then
+            sips -s format icns Assets/icon.ico --out "${APP_DIR}/Contents/Resources/AppIcon.icns" 2>/dev/null || true
+        fi
+
+      - name: Create macOS DMG
+        run: |
+        VERSION="${{ github.ref_name }}"
+        APP_NAME="SentoLauncher"
+        if [ -d "release/${APP_NAME}.app" ]; then
+            hdiutil create -volname "Sento Launcher" -srcfolder "release/${APP_NAME}.app" -ov -format UDZO "release/${APP_NAME}-${VERSION}-macos.dmg" || true
+        fi
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentolauncher-${{ matrix.rid }}
+          path: |
+            publish/${{ matrix.rid }}/
+            release/${APP_NAME}.app/
+          retention-days: 90
+
+  build-linux:
+    name: Build Linux x64 (AppImage + .deb)
+    runs-on: ubuntu-latest
+    environment: linux-build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          cache: true
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-0 libwebkit2gtk-4.0.0 libarchive13
+
+      - name: Restore dependencies
+        run: dotnet restore SentoLauncher.csproj
+
+      - name: Build Linux x64
+        run: dotnet publish SentoLauncher.csproj `
+          -c Release `
+          -r linux-x64 `
+          --self-contained true `
+          -p:PublishSingleFile=true `
+          -p:PublishTrimmed=false `
+          -p:TrimMode=partial `
+          -o publish/linux-x64 `
+          --no-restore
+
+      - name: Verify executable
+        run: |
+        exe="publish/linux-x64/SentoLauncher"
+        if [ -f "$exe" ]; then
+          size=$(du -h "$exe" | cut -f1)
+          echo "Linux x64: $exe ($size)"
+          chmod +x "$exe"
+        else
+          echo "Linux executable not found!" -ForegroundColor Red
+          exit 1
+        fi
+
+      - name: Create AppImage
+        run: |
+        APP_NAME="SentoLauncher"
+        VERSION="${{ github.ref_name }}"
+        PUBLISH_DIR="publish/linux-x64"
+        APPDIR="release/${APP_NAME}.AppDir"
+        APPIMAGE="release/${APP_NAME}-${VERSION}-linux-x64.AppImage"
+
+        rm -rf "${APPDIR}" "${APPIMAGE}"
+
+        mkdir -p "${APPDIR}/usr/bin"
+        mkdir -p "${APPDIR}/usr/share/applications"
+        mkdir -p "${APPDIR}/usr/share/icons/hicolor/256x256/apps"
+
+        cp "${PUBLISH_DIR}/SentoLauncher" "${APPDIR}/usr/bin/"
+        chmod +x "${APPDIR}/usr/bin/SentoLauncher"
+
+        cp -r "${PUBLISH_DIR}/." "${APPDIR}/usr/bin/"
+
+        cat > "${APPDIR}/usr/share/applications/${APP_NAME}.desktop" << DESKTOPEOF
+[Desktop Entry]
+Type=Application
+Name=Sento Launcher
+Comment=Cross-platform Minecraft launcher with Modrinth integration
+Exec=SentoLauncher
+Icon=sentolauncher
+Terminal=false
+Categories=Game;Application;
+StartupNotify=true
+StartupWMClass=SentoLauncher
+Keywords=Minecraft;Launcher;Mods;Fabric;Forge;
+DESKTOPEOF
+
+        if [ -f "Assets/icon.png" ]; then
+            cp "Assets/icon.png" "${APPDIR}/usr/share/icons/hicolor/256x256/apps/sentolauncher.png"
+        fi
+
+        cat > "${APPDIR}/AppRun" << APPRUNEOF
+#!/bin/bash
+HERE="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+export PATH="${HERE}/usr/bin:${PATH}"
+export LD_LIBRARY_PATH="${HERE}/usr/lib:${LD_LIBRARY_PATH}"
+EXEC="${HERE}/usr/bin/SentoLauncher"
+if [ -f "$EXEC" ]; then
+    exec "$EXEC" "$@"
+else
+    echo "Error: Executable not found at ${EXEC}"
+    exit 1
+fi
+APPRUNEOF
+        chmod +x "${APPDIR}/AppRun"
+
+        if [ ! -f "appimagetool-x86_64.AppImage" ]; then
+            echo "Downloading appimagetool..."
+            wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage" -O appimagetool-x86_64.AppImage
+            chmod +x appimagetool-x86_64.AppImage
+        fi
+
+        echo "Building AppImage..."
+        ARCH=x86_64 ./appimagetool-x86_64.AppImage "${APPDIR}" "${APPIMAGE}"
+
+        if [ -f "${APPIMAGE}" ]; then
+            echo "AppImage created: ${APPIMAGE}"
+        else
+            echo "AppImage creation failed!" -ForegroundColor Red
+            exit 1
+        fi
+
+      - name: Create .deb package
+        run: |
+        APP_NAME="SentoLauncher"
+        VERSION="${{ github.ref_name }}"
+        DEB_NAME="${APP_NAME}_${VERSION}_amd64.deb"
+        DEB_DIR="release/deb"
+
+        mkdir -p "${DEB_DIR}"
+
+        mkdir -p "${DEB_DIR}/DEBIAN"
+        mkdir -p "${DEB_DIR}/usr/bin"
+        mkdir -p "${DEB_DIR}/usr/share/applications"
+        mkdir -p "${DEB_DIR}/usr/share/icons/hicolor/256x256/apps"
+
+        cat > "${DEB_DIR}/DEBIAN/control" << CONTROLEOF
+Package: sentolauncher
+Version: ${VERSION}
+Section: games
+Priority: optional
+Architecture: amd64
+Maintainer: Sento Launcher <dev@sento.dev>
+Description |multi-line: |
+  Cross-platform Minecraft launcher with Modrinth integration,
+  Fabric/Forge support, and Microsoft/offline authentication.
+CONTROLEOF
+
+        cp "publish/linux-x64/SentoLauncher" "${DEB_DIR}/usr/bin/"
+        chmod +x "${DEB_DIR}/usr/bin/SentoLauncher"
+
+        cp "sentolauncher.desktop" "${DEB_DIR}/usr/share/applications/sentolauncher.desktop"
+
+        if [ -f "Assets/icon.png" ]; then
+            cp "Assets/icon.png" "${DEB_DIR}/usr/share/icons/hicolor/256x256/apps/sentolauncher.png"
+        fi
+
+        cd "${DEB_DIR}"
+        dpkg-deb --build .
+        mv "${APP_NAME}.deb" "../${DEB_NAME}"
+        cd ..
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentolauncher-linux-x64
+          path: |
+            publish/linux-x64/
+            release/${APP_NAME}.AppImage
+            release/${DEB_NAME}
+          retention-days: 90
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build-windows, build-macos, build-linux]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: false
+
+      - name: Prepare release directory
+        run: |
+        mkdir -p release
+        rm -rf release/*
+
+      - name: Organize Windows files
+        run: |
+        mkdir -p release/win
+        if [ -f "artifacts/sentolauncher-win-x64/SentoLauncher-win-x64.zip" ]; then
+            cp artifacts/sentolauncher-win-x64/SentoLauncher-win-x64.zip release/win/SentoLauncher-win-x64.zip
+        fi
+
+      - name: Organize macOS files
+        run: |
+        mkdir -p release/mac
+        if [ -d "artifacts/sentolauncher-osx-x64/release/SentoLauncher.app" ]; then
+            cp -r artifacts/sentolauncher-osx-x64/release/SentoLauncher.app release/mac/
+        fi
+        if [ -d "artifacts/sentolauncher-osx-arm64/release/SentoLauncher.app" ]; then
+            cp -r artifacts/sentolauncher-osx-arm64/release/SentoLauncher.app release/mac/
+        fi
+        if [ -f "artifacts/sentolauncher-osx-x64/release/${APP_NAME}-${VERSION}-macos.dmg" ]; then
+            cp artifacts/sentolauncher-osx-x64/release/${APP_NAME}-${VERSION}-macos.dmg release/mac/
+        fi
+        if [ -f "artifacts/sentolauncher-osx-arm64/release/${APP_NAME}-${VERSION}-macos.dmg" ]; then
+            cp artifacts/sentolauncher-osx-arm64/release/${APP_NAME}-${VERSION}-macos.dmg release/mac/
+        fi
+
+      - name: Organize Linux files
+        run: |
+        mkdir -p release/linux
+        if [ -f "artifacts/sentolauncher-linux-x64/release/SentoLauncher-*-linux-x64.AppImage" ]; then
+            cp artifacts/sentolauncher-linux-x64/release/SentoLauncher-*-linux-x64.AppImage release/linux/
+        fi
+        if [ -f "artifacts/sentolauncher-linux-x64/release/sentolauncher_*.deb" ]; then
+            cp artifacts/sentolauncher-linux-x64/release/sentolauncher_*.deb release/linux/
+        fi
+
+      - name: Generate checksums
+        run: |
+        cd release
+        sha256sum * > SHA256SUMS.txt
+        echo "Generated SHA256SUMS"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Sento Launcher ${{ github.ref_name }}"
+          files: |
+            release/win/SentoLauncher-win-x64.zip
+            release/mac/SentoLauncher*.app 2>/dev/null || true
+            release/mac/*.dmg 2>/dev/null || true
+            release/linux/SentoLauncher-*-linux-x64.AppImage 2>/dev/null || true
+            release/linux/sentolauncher_*.deb 2>/dev/null || true
+            release/SHA256SUMS.txt
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

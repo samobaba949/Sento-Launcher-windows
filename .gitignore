@@ -1,0 +1,54 @@
+# .NET specific
+/bin/
+/obj/
+/*.user
+/*.userossolution
+*.suo
+*.targets
+
+# Visual Studio
+.vscode/
+*.ide
+*.csproj
+*.sln
+*.sln.fallback
+
+# NuGet
+.packages
+*.nuget
+
+# Build outputs
+**.dll
+**.exe
+**.pdb
+**.lib
+**.so
+**.a
+**.jnilib
+**.cache
+
+# Publish
+/publish
+
+# Roslyn
+*.dotops
+
+# Avaonlia specific
+*.user
+*.User
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Icons and assets (keep these)
+!Assets/
+!Assets/**/*
+!Assets/icon.ico
+!Assets/logo.png
+
+# Runtime configurations
+*.runtimeconfig.json
+
+# Dotnet temporary
+project.assets.json

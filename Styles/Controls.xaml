@@ -1,0 +1,255 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ==================== SIZING / SPACING ==================== -->
+    <CornerRadius x:Key="SmallCornerRadius">4</CornerRadius>
+    <CornerRadius x:Key="MediumCornerRadius">8</CornerRadius>
+    <CornerRadius x:Key="LargeCornerRadius">12</CornerRadius>
+    <CornerRadius x:Key="WindowCornerRadius">12</CornerRadius>
+    <CornerRadius x:Key="ButtonCornerRadius">8</CornerRadius>
+    <CornerRadius x:Key="InputCornerRadius">6</CornerRadius>
+
+    <x:Double x:Key="FontSizeTiny">10</x:Double>
+    <x:Double x:Key="FontSizeSmall">11</x:Double>
+    <x:Double x:Key="FontSizeNormal">13</x:Double>
+    <x:Double x:Key="FontSizeMedium">14</x:Double>
+    <x:Double x:Key="FontSizeLarge">16</x:Double>
+    <x:Double x:Key="FontSizeXLarge">20</x:Double>
+    <x:Double x:Key="FontSizeTitle">24</x:Double>
+
+    <Thickness x:Key="MarginTiny">2</Thickness>
+    <Thickness x:Key="MarginSmall">4</Thickness>
+    <Thickness x:Key="MarginNormal">8</Thickness>
+    <Thickness x:Key="MarginMedium">12</Thickness>
+    <Thickness x:Key="MarginLarge">16</Thickness>
+
+    <Thickness x:Key="PaddingSmall">6</Thickness>
+    <Thickness x:Key="PaddingNormal">10</Thickness>
+    <Thickness x:Key="PaddingMedium">14</Thickness>
+    <Thickness x:Key="PaddingLarge">20</Thickness>
+
+    <!-- ==================== WINDOW ==================== -->
+    <Style Selector="Window.mainWindow">
+        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
+        <Setter Property="MinWidth" Value="900"/>
+        <Setter Property="MinHeight" Value="560"/>
+        <Setter Property="Width" Value="1050"/>
+        <Setter Property="Height" Value="650"/>
+    </Style>
+
+    <!-- ==================== BUTTONS ==================== -->
+    <Style Selector="Button.titleBarButton">
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeNormal}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <Style Selector="Button.titleBarButton:pointerover">
+        <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style Selector="Button.titleBarButton:pressed">
+        <Setter Property="Background" Value="{StaticResource PressedBackgroundBrush}"/>
+    </Style>
+
+    <Style Selector="Button.closeButton">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style Selector="Button.closeButton:pointerover">
+        <Setter Property="Background" Value="{StaticResource ErrorBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextOnAccentBrush}"/>
+    </Style>
+
+    <Style Selector="Button.sidebarButton">
+        <Setter Property="Height" Value="46"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Padding" Value="{StaticResource PaddingNormal}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+    </Style>
+
+    <Style Selector="Button.sidebarButton:pointerover">
+        <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style Selector="Button.sidebarButton:pressed">
+        <Setter Property="Background" Value="{StaticResource PressedBackgroundBrush}"/>
+    </Style>
+
+    <Style Selector="Button.sidebarButton.active">
+        <Setter Property="Foreground" Value="{StaticResource TextOnAccentBrush}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+    </Style>
+
+    <Style Selector="Button.sidebarButton.active:pointerover">
+        <Setter Property="Background" Value="{StaticResource AccentHoverBrush}"/>
+    </Style>
+
+    <Style Selector="Button.primaryButton">
+        <Setter Property="Height" Value="56"/>
+        <Setter Property="MinWidth" Value="200"/>
+        <Setter Property="Background" Value="{StaticResource AccentGradientBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource TextOnAccentBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Padding" Value="24,12"/>
+    </Style>
+
+    <Style Selector="Button.primaryButton:pointerover">
+        <Setter Property="Opacity" Value="0.9"/>
+    </Style>
+
+    <Style Selector="Button.primaryButton:pressed">
+        <Setter Property="Opacity" Value="0.8"/>
+    </Style>
+
+    <Style Selector="Button.secondaryButton">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinWidth" Value="120"/>
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Padding" Value="16,8"/>
+    </Style>
+
+    <Style Selector="Button.secondaryButton:pointerover">
+        <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+    </Style>
+
+    <Style Selector="Button.secondaryButton:pressed">
+        <Setter Property="Background" Value="{StaticResource PressedBackgroundBrush}"/>
+    </Style>
+
+    <Style Selector="Button.accentButton">
+        <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextOnAccentBrush}"/>
+    </Style>
+
+    <Style Selector="Button.accentButton:pointerover">
+        <Setter Property="Background" Value="{StaticResource AccentHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentHoverBrush}"/>
+    </Style>
+
+    <!-- ==================== TEXTBOX ==================== -->
+    <Style Selector="TextBox.modernTextBox">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Background" Value="{StaticResource TertiaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="CaretBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="SelectionBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="CornerRadius" Value="{StaticResource InputCornerRadius}"/>
+    </Style>
+
+    <Style Selector="TextBox.modernTextBox:pointerover">
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+    </Style>
+
+    <Style Selector="TextBox.modernTextBox:focus">
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <!-- ==================== COMBOBOX ==================== -->
+    <Style Selector="ComboBox.modernComboBox">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Background" Value="{StaticResource TertiaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="CornerRadius" Value="{StaticResource InputCornerRadius}"/>
+    </Style>
+
+    <Style Selector="ComboBox.modernComboBox:pointerover">
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+    </Style>
+
+    <!-- ==================== CHECKBOX ==================== -->
+    <Style Selector="CheckBox.modernCheckBox">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <!-- ==================== SLIDER ==================== -->
+    <Style Selector="Slider.modernSlider">
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+    </Style>
+
+    <!-- ==================== PROGRESS BAR ==================== -->
+    <Style Selector="ProgressBar.modernProgressBar">
+        <Setter Property="Height" Value="6"/>
+        <Setter Property="Background" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+    </Style>
+
+    <!-- ==================== CARD ==================== -->
+    <Style Selector="Border.card">
+        <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource LargeCornerRadius}"/>
+        <Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+    </Style>
+
+    <!-- ==================== TABS ==================== -->
+    <Style Selector="TabItem.modernTabItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Padding" Value="20,12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <Style Selector="TabItem.modernTabItem:pointerover">
+        <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style Selector="TabItem.modernTabItem:selected">
+        <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextOnAccentBrush}"/>
+    </Style>
+
+</ResourceDictionary>

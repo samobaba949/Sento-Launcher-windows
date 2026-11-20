@@ -1,0 +1,30 @@
+[Desktop Entry]
+Type=Application
+Version=1.0.1
+Name=Sento Launcher
+GenericName=Minecraft Launcher
+Comment=Cross-platform Minecraft launcher with Modrinth integration, Fabric/Forge support, and Microsoft/offline authentication
+Exec=SentoLauncher
+Icon=sentolauncher
+Terminal=false
+Type=Application
+Categories=Game;Application;
+StartupNotify=true
+StartupWMClass=SentoLauncher
+Keywords=Minecraft;Launcher;Mods;Fabric;Forge;NeoForge;Modrinth;
+MimeType=x-scheme-handler/sentolauncher;
+
+# Supported protocols (for custom URL handling)
+# Actions=AddServer;OpenMods;OpenSettings;
+
+[Desktop Action AddServer]
+Name=Add Server
+Exec=SentoLauncher --add-server
+
+[Desktop Action OpenMods]
+Name=Open Mods Folder
+Exec=SentoLauncher --open-mods
+
+[Desktop Action OpenSettings]
+Name=Open Settings
+Exec=SentoLauncher --settings
